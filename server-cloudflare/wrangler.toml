@@ -1,0 +1,10 @@
+# Cloudflare Wrangler configuration for PioNotes serverless worker
+name = "pionotes-api"
+main = "src/index.js"
+compatibility_date = "2024-05-30"
+
+# Cloudflare D1 SQL Serverless Database Binding
+[[d1_databases]]
+binding = "DB" # Exposed as env.DB in Hono
+database_name = "pionotes-db"
+database_id = "YOUR_DATABASE_ID_HERE" # Will be generated automatically during setup

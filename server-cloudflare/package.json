@@ -1,0 +1,16 @@
+{
+  "name": "pionotes-cloudflare-worker",
+  "version": "1.0.0",
+  "description": "Serverless PioNotes API for Cloudflare Workers with Hono and Cloudflare D1",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "hono": "^4.3.7"
+  },
+  "devDependencies": {
+    "wrangler": "^3.57.1"
+  }
+}
