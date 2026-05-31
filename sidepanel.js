@@ -72,7 +72,6 @@ const DOM = {
   logoutBtn: document.getElementById("logout-btn"),
 
   // Server & Admin Selectors
-  settingsApiUrl: document.getElementById("settings-api-url"),
   adminNewUsername: document.getElementById("admin-new-username"),
   adminNewPassword: document.getElementById("admin-new-password"),
   adminCreateUserBtn: document.getElementById("admin-create-user-btn"),
@@ -1112,10 +1111,6 @@ function setupEventListeners() {
   if (DOM.closeSettingsModal) DOM.closeSettingsModal.addEventListener("click", closeSettingsModalFunc);
   if (DOM.saveSettingsBtn) {
     DOM.saveSettingsBtn.addEventListener("click", () => {
-      if (DOM.settingsApiUrl) {
-        state.settings.apiUrl = DOM.settingsApiUrl.value.trim() || "http://localhost:3000";
-        Storage.save();
-      }
       closeSettingsModalFunc();
     });
   }
@@ -1414,10 +1409,7 @@ function initSession() {
       if (DOM.loginView) DOM.loginView.style.display = "none";
       const appLayout = document.querySelector(".app-layout");
       if (appLayout) appLayout.style.display = "flex";
-      
-      if (DOM.settingsApiUrl) {
-        DOM.settingsApiUrl.value = state.settings.apiUrl || "http://localhost:3000";
-      }
+
       
       const isSuperAdmin = state.settings.user && state.settings.user.role === 'superadmin';
       const adminElements = document.querySelectorAll(".superadmin-only");
