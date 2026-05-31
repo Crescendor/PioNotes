@@ -69,7 +69,7 @@ const DOM = {
   loginPasswordInput: document.getElementById("login-password"),
   loginSubmitBtn: document.getElementById("login-submit-btn"),
   loginErrorMsg: document.getElementById("login-error-msg"),
-  logoutBtn: document.getElementById("logout-btn"),
+  sidebarLogoutBtn: document.getElementById("sidebar-logout-btn"),
 
   // Server & Admin Selectors
   adminNewUsername: document.getElementById("admin-new-username"),
@@ -80,7 +80,19 @@ const DOM = {
   adminBtn: document.getElementById("sidebar-admin-btn"),
   adminModal: document.getElementById("admin-modal"),
   closeAdminModal: document.getElementById("close-admin-modal"),
-  saveAdminBtn: document.getElementById("save-admin-btn")
+  saveAdminBtn: document.getElementById("save-admin-btn"),
+
+  // User Profile Selectors
+  profileBtn: document.getElementById("sidebar-profile-btn"),
+  profileModal: document.getElementById("profile-modal"),
+  closeProfileModal: document.getElementById("close-profile-modal"),
+  saveProfileBtn: document.getElementById("save-profile-btn"),
+  profileAvatarChar: document.getElementById("profile-avatar-char"),
+  profileUsernameDisplay: document.getElementById("profile-username-display"),
+  profileRoleDisplay: document.getElementById("profile-role-display"),
+  profileOldPassword: document.getElementById("profile-old-password"),
+  profileNewPassword: document.getElementById("profile-new-password"),
+  profileChangePasswordBtn: document.getElementById("profile-change-password-btn")
 };
 
 // 2. DATA STORAGE LAYER (Chrome Storage with LocalStorage fallback & try-catch security)
@@ -924,6 +936,71 @@ function closeAdminModalFunc() {
   }
 }
 
+// User Profile Modal & Password Change handlers
+function openProfileModal() {
+  try {
+    console.log("openProfileModal triggered");
+    
+    if (state.settings.user) {
+      const username = state.settings.user.username || "User";
+      const role = state.settings.user.role === 'superadmin' ? "👑 Süper Admin" : "👤 Standart Kullanıcı";
+      
+      if (DOM.profileUsernameDisplay) DOM.profileUsernameDisplay.innerText = username;
+      if (DOM.profileRoleDisplay) DOM.profileRoleDisplay.innerText = role;
+      if (DOM.profileAvatarChar) DOM.profileAvatarChar.innerText = username.charAt(0).toUpperCase();
+    }
+    
+    // Clear password input fields on modal open
+    if (DOM.profileOldPassword) DOM.profileOldPassword.value = "";
+    if (DOM.profileNewPassword) DOM.profileNewPassword.value = "";
+    
+    if (DOM.profileModal) DOM.profileModal.classList.remove("hidden");
+  } catch (err) {
+    console.error("openProfileModal error:", err);
+  }
+}
+
+function closeProfileModalFunc() {
+  try {
+    console.log("closeProfileModalFunc triggered");
+    if (DOM.profileModal) DOM.profileModal.classList.add("hidden");
+  } catch (err) {
+    console.error("closeProfileModalFunc error:", err);
+  }
+}
+
+async function handleProfilePasswordChange() {
+  try {
+    const oldPassword = DOM.profileOldPassword ? DOM.profileOldPassword.value : "";
+    const newPassword = DOM.profileNewPassword ? DOM.profileNewPassword.value : "";
+    
+    if (!oldPassword || !newPassword) {
+      showToast("Lütfen tüm alanları doldurun.", "error");
+      return;
+    }
+    
+    if (DOM.profileChangePasswordBtn) {
+      DOM.profileChangePasswordBtn.disabled = true;
+      DOM.profileChangePasswordBtn.innerText = "Güncelleniyor...";
+    }
+    
+    const response = await apiFetch('/api/auth/change-password', {
+      method: 'POST',
+      body: JSON.stringify({ oldPassword, newPassword })
+    });
+    
+    showToast(response.message || "Şifreniz başarıyla güncellendi.");
+    closeProfileModalFunc();
+  } catch (err) {
+    showToast(err.message || "Şifre güncellenemedi.", "error");
+  } finally {
+    if (DOM.profileChangePasswordBtn) {
+      DOM.profileChangePasswordBtn.disabled = false;
+      DOM.profileChangePasswordBtn.innerText = "Şifreyi Güncelle";
+    }
+  }
+}
+
 function exportData() {
   try {
     console.log("exportData triggered");
@@ -1095,6 +1172,9 @@ function setupEventListeners() {
     if (e.target === DOM.adminModal) {
       closeAdminModalFunc();
     }
+    if (e.target === DOM.profileModal) {
+      closeProfileModalFunc();
+    }
   });
 
   // Emoji picker length control
@@ -1119,6 +1199,13 @@ function setupEventListeners() {
   if (DOM.adminBtn) DOM.adminBtn.addEventListener("click", openAdminModal);
   if (DOM.closeAdminModal) DOM.closeAdminModal.addEventListener("click", closeAdminModalFunc);
   if (DOM.saveAdminBtn) DOM.saveAdminBtn.addEventListener("click", closeAdminModalFunc);
+  
+  // User Profile Modal events
+  if (DOM.profileBtn) DOM.profileBtn.addEventListener("click", openProfileModal);
+  if (DOM.closeProfileModal) DOM.closeProfileModal.addEventListener("click", closeProfileModalFunc);
+  if (DOM.saveProfileBtn) DOM.saveProfileBtn.addEventListener("click", closeProfileModalFunc);
+  if (DOM.profileChangePasswordBtn) DOM.profileChangePasswordBtn.addEventListener("click", handleProfilePasswordChange);
+
   if (DOM.exportNotesBtn) DOM.exportNotesBtn.addEventListener("click", exportData);
   if (DOM.importNotesBtn) {
     DOM.importNotesBtn.addEventListener("click", () => {
@@ -1186,8 +1273,8 @@ function setupEventListeners() {
     });
   }
 
-  if (DOM.logoutBtn) {
-    DOM.logoutBtn.addEventListener("click", logout);
+  if (DOM.sidebarLogoutBtn) {
+    DOM.sidebarLogoutBtn.addEventListener("click", logout);
   }
 
   // Admin view events

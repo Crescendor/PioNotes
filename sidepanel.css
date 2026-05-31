@@ -1640,6 +1640,28 @@ body.light-theme .toast {
   box-shadow: 0 0 8px rgba(251, 146, 60, 0.1);
 }
 
+/* Sidebar Action Buttons Premium Styling Overrides */
+#sidebar-logout-btn:hover {
+  border-color: #f43f5e !important;
+  color: #f43f5e !important;
+  background-color: rgba(244, 63, 94, 0.1) !important;
+  box-shadow: 0 0 10px rgba(244, 63, 94, 0.2) !important;
+}
+
+#sidebar-admin-btn:hover {
+  border-color: #fb923c !important;
+  color: #fb923c !important;
+  background-color: rgba(251, 146, 60, 0.1) !important;
+  box-shadow: 0 0 10px rgba(251, 146, 60, 0.2) !important;
+}
+
+#sidebar-profile-btn:hover {
+  border-color: var(--accent-color) !important;
+  color: var(--accent-color) !important;
+  background-color: var(--accent-glow) !important;
+  box-shadow: 0 0 10px var(--accent-glow) !important;
+}
+
 
 
 
