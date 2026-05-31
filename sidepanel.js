@@ -77,7 +77,11 @@ const DOM = {
   adminNewPassword: document.getElementById("admin-new-password"),
   adminCreateUserBtn: document.getElementById("admin-create-user-btn"),
   adminUsersTbody: document.getElementById("admin-users-tbody"),
-  noteIsGlobalInput: document.getElementById("note-is-global-input")
+  noteIsGlobalInput: document.getElementById("note-is-global-input"),
+  adminBtn: document.getElementById("sidebar-admin-btn"),
+  adminModal: document.getElementById("admin-modal"),
+  closeAdminModal: document.getElementById("close-admin-modal"),
+  saveAdminBtn: document.getElementById("save-admin-btn")
 };
 
 // 2. DATA STORAGE LAYER (Chrome Storage with LocalStorage fallback & try-catch security)
@@ -900,6 +904,27 @@ function closeSettingsModalFunc() {
   }
 }
 
+// Admin Panel Modal
+function openAdminModal() {
+  try {
+    console.log("openAdminModal triggered");
+    if (DOM.adminModal) DOM.adminModal.classList.remove("hidden");
+    adminFetchUsers(); // Refresh the list of users
+  } catch (err) {
+    console.error("openAdminModal error:", err);
+    showToast("Yönetici paneli açılırken hata oluştu: " + err.message, "error");
+  }
+}
+
+function closeAdminModalFunc() {
+  try {
+    console.log("closeAdminModalFunc triggered");
+    if (DOM.adminModal) DOM.adminModal.classList.add("hidden");
+  } catch (err) {
+    console.error("closeAdminModalFunc error:", err);
+  }
+}
+
 function exportData() {
   try {
     console.log("exportData triggered");
@@ -1068,6 +1093,9 @@ function setupEventListeners() {
     if (e.target === DOM.settingsModal) {
       closeSettingsModalFunc();
     }
+    if (e.target === DOM.adminModal) {
+      closeAdminModalFunc();
+    }
   });
 
   // Emoji picker length control
@@ -1091,6 +1119,11 @@ function setupEventListeners() {
       closeSettingsModalFunc();
     });
   }
+  
+  // Admin Modal events
+  if (DOM.adminBtn) DOM.adminBtn.addEventListener("click", openAdminModal);
+  if (DOM.closeAdminModal) DOM.closeAdminModal.addEventListener("click", closeAdminModalFunc);
+  if (DOM.saveAdminBtn) DOM.saveAdminBtn.addEventListener("click", closeAdminModalFunc);
   if (DOM.exportNotesBtn) DOM.exportNotesBtn.addEventListener("click", exportData);
   if (DOM.importNotesBtn) {
     DOM.importNotesBtn.addEventListener("click", () => {
@@ -1392,14 +1425,14 @@ function initSession() {
       adminElements.forEach(el => {
         if (isSuperAdmin) {
           el.classList.remove("hidden");
-          if (el.id === "modal-global-note-row" || el.id === "settings-admin-divider" || el.id === "settings-admin-group") {
-            el.style.display = el.id === "modal-global-note-row" ? "flex" : "block";
+          if (el.id === "modal-global-note-row" || el.id === "sidebar-admin-btn") {
+            el.style.display = "flex";
+          } else {
+            el.style.display = "block";
           }
         } else {
           el.classList.add("hidden");
-          if (el.id === "modal-global-note-row" || el.id === "settings-admin-divider" || el.id === "settings-admin-group") {
-            el.style.display = "none";
-          }
+          el.style.display = "none";
         }
       });
       

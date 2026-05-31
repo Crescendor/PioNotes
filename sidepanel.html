@@ -75,6 +75,10 @@
         <button id="sidebar-settings-btn" class="sidebar-action-btn" title="PioNotes Ayarları">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
         </button>
+        <!-- Admin Button (Super Admin Only) -->
+        <button id="sidebar-admin-btn" class="sidebar-action-btn superadmin-only hidden" title="🛡️ Yönetici Paneli" style="display: none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        </button>
       </div>
     </aside>
 
@@ -326,46 +330,57 @@
           </div>
         </div>
 
-        <div class="settings-divider superadmin-only hidden" id="settings-admin-divider"></div>
-
-        <!-- Super Admin Panel Section -->
-        <div class="settings-group superadmin-only hidden" id="settings-admin-group">
-          <label class="settings-group-title" style="color: var(--accent-color); font-weight: 700;">🛡️ Süper Admin Yönetim Paneli</label>
-          <p class="settings-group-desc">Yeni kullanıcı hesapları açabilir ve mevcut hesapları silebilirsiniz.</p>
-          
-          <!-- Yeni Kullanıcı Formu -->
-          <div class="admin-create-user-box" style="margin-top: 12px; padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--border-radius-md);">
-            <h4 style="font-size: 0.85rem; margin-bottom: 8px; color: var(--text-primary); font-weight: 600;">Yeni Kullanıcı Hesabı Ekle</h4>
-            <div class="form-row" style="display: flex; gap: 8px; flex-wrap: wrap;">
-              <input type="text" id="admin-new-username" placeholder="Kullanıcı Adı" style="flex: 1; min-width: 80px; padding: 8px; font-size: 0.8rem; border-radius: var(--border-radius-sm); background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-primary); font-family: var(--font-main);">
-              <input type="password" id="admin-new-password" placeholder="Şifre" style="flex: 1; min-width: 80px; padding: 8px; font-size: 0.8rem; border-radius: var(--border-radius-sm); background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-primary); font-family: var(--font-main);">
-              <button id="admin-create-user-btn" class="btn btn-primary" style="padding: 0 12px; font-size: 0.8rem; height: 32px;">Ekle</button>
-            </div>
-          </div>
-
-          <!-- Mevcut Kullanıcı Listesi -->
-          <div class="admin-users-list-box" style="margin-top: 12px;">
-            <h4 style="font-size: 0.85rem; margin-bottom: 8px; color: var(--text-primary); font-weight: 600;">Kullanıcı Listesi</h4>
-            <div class="admin-users-table-wrapper" style="max-height: 150px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm);">
-              <table id="admin-users-table" style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: left;">
-                <thead>
-                  <tr style="background: rgba(255,255,255,0.04); border-bottom: 1px solid var(--border-color);">
-                    <th style="padding: 6px 10px; color: var(--text-muted); font-weight: 600;">Kullanıcı Adı</th>
-                    <th style="padding: 6px 10px; color: var(--text-muted); font-weight: 600;">Rol</th>
-                    <th style="padding: 6px 10px; text-align: right; color: var(--text-muted); font-weight: 600;">İşlem</th>
-                  </tr>
-                </thead>
-                <tbody id="admin-users-tbody">
-                  <!-- JS ile doldurulacak -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
       </div>
       <div class="modal-footer">
         <button class="btn btn-primary" id="save-settings-btn">Tamam</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN MODAL (SUPER ADMIN EXCLUSIVE) -->
+  <div class="modal-backdrop hidden" id="admin-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="display: flex; align-items: center; gap: 8px; color: var(--accent-color); font-weight: 700;">
+          <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          Süper Admin Yönetim Paneli
+        </h3>
+        <button class="modal-close-btn" id="close-admin-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="settings-group-desc" style="margin-bottom: 16px;">Sistemdeki diğer kullanıcı hesaplarını yönetebilir, yeni kullanıcı ekleyebilir veya silebilirsiniz.</p>
+        
+        <!-- Yeni Kullanıcı Formu -->
+        <div class="admin-create-user-box" style="padding: 14px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--border-radius-md);">
+          <h4 style="font-size: 0.85rem; margin-bottom: 10px; color: var(--text-primary); font-weight: 600;">Yeni Kullanıcı Hesabı Ekle</h4>
+          <div class="form-row" style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <input type="text" id="admin-new-username" placeholder="Kullanıcı Adı" style="flex: 1; min-width: 80px; padding: 8px 10px; font-size: 0.8rem; border-radius: var(--border-radius-sm); background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-primary); font-family: var(--font-main);">
+            <input type="password" id="admin-new-password" placeholder="Şifre" style="flex: 1; min-width: 80px; padding: 8px 10px; font-size: 0.8rem; border-radius: var(--border-radius-sm); background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-primary); font-family: var(--font-main);">
+            <button id="admin-create-user-btn" class="btn btn-primary" style="padding: 0 16px; font-size: 0.8rem; height: 34px;">Ekle</button>
+          </div>
+        </div>
+
+        <!-- Mevcut Kullanıcı Listesi -->
+        <div class="admin-users-list-box" style="margin-top: 20px;">
+          <h4 style="font-size: 0.85rem; margin-bottom: 10px; color: var(--text-primary); font-weight: 600;">Mevcut Kullanıcılar</h4>
+          <div class="admin-users-table-wrapper" style="max-height: 180px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--border-radius-md);">
+            <table id="admin-users-table" style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: left;">
+              <thead>
+                <tr style="background: rgba(255,255,255,0.04); border-bottom: 1px solid var(--border-color);">
+                  <th style="padding: 8px 12px; color: var(--text-muted); font-weight: 600;">Kullanıcı Adı</th>
+                  <th style="padding: 8px 12px; color: var(--text-muted); font-weight: 600;">Rol</th>
+                  <th style="padding: 8px 12px; text-align: right; color: var(--text-muted); font-weight: 600;">İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="admin-users-tbody">
+                <!-- JS ile doldurulacak -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="save-admin-btn">Tamam</button>
       </div>
     </div>
   </div>
